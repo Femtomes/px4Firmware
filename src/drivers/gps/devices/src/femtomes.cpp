@@ -90,36 +90,36 @@ int GPSDriverFemto::handleMessage(int len)
 
     FEMTO_DEBUG("FEMTO process_message messid=%u\n",messageid);
 
-    if (messageid == FEMTO_MSG_ID_PX4GPS) /**< px4gpsB*/
+    if (messageid == FEMTO_MSG_ID_UAVGPS) /**< uavgpsB*/
     {
 		memset(_gps_position,0,sizeof(struct vehicle_gps_position_s));
-		memset(&_femto_px4_gps,0,sizeof(struct femto_px4_gps_t));
+		memset(&_femto_uav_gps,0,sizeof(struct femto_uav_gps_t));
 
-		memcpy(&_femto_px4_gps.time_utc_usec,&_femto_msg.data.bytes[0],sizeof(struct femto_px4_gps_t));
+		memcpy(&_femto_uav_gps.time_utc_usec,&_femto_msg.data.bytes[0],sizeof(struct femto_uav_gps_t));
 
-		_gps_position->time_utc_usec = _femto_px4_gps.time_utc_usec;
-		_gps_position->lat = _femto_px4_gps.lat;
-		_gps_position->lon = _femto_px4_gps.lon;
-		_gps_position->alt = _femto_px4_gps.alt;
-		_gps_position->alt_ellipsoid = _femto_px4_gps.alt_ellipsoid; 
-		_gps_position->s_variance_m_s = _femto_px4_gps.s_variance_m_s;  
-		_gps_position->c_variance_rad = _femto_px4_gps.c_variance_rad;
-		_gps_position->eph = _femto_px4_gps.eph;
-		_gps_position->epv = _femto_px4_gps.epv;
-		_gps_position->hdop = _femto_px4_gps.hdop;
-		_gps_position->vdop = _femto_px4_gps.vdop;
-		_gps_position->noise_per_ms = _femto_px4_gps.noise_per_ms;
-		_gps_position->jamming_indicator = _femto_px4_gps.jamming_indicator;
-		_gps_position->vel_m_s = _femto_px4_gps.vel_m_s;
-		_gps_position->vel_n_m_s = _femto_px4_gps.vel_n_m_s;
-		_gps_position->vel_e_m_s = _femto_px4_gps.vel_e_m_s;
-		_gps_position->vel_d_m_s = _femto_px4_gps.vel_d_m_s;
-		_gps_position->cog_rad = _femto_px4_gps.cog_rad;
-		_gps_position->timestamp_time_relative = _femto_px4_gps.timestamp_time_relative;
-		_gps_position->heading = _femto_px4_gps.heading;
-		_gps_position->fix_type = _femto_px4_gps.fix_type;
-		_gps_position->vel_ned_valid = _femto_px4_gps.vel_ned_valid;
-		_gps_position->satellites_used = _femto_px4_gps.satellites_used;
+		_gps_position->time_utc_usec = _femto_uav_gps.time_utc_usec;
+		_gps_position->lat = _femto_uav_gps.lat;
+		_gps_position->lon = _femto_uav_gps.lon;
+		_gps_position->alt = _femto_uav_gps.alt;
+		_gps_position->alt_ellipsoid = _femto_uav_gps.alt_ellipsoid; 
+		_gps_position->s_variance_m_s = _femto_uav_gps.s_variance_m_s;  
+		_gps_position->c_variance_rad = _femto_uav_gps.c_variance_rad;
+		_gps_position->eph = _femto_uav_gps.eph;
+		_gps_position->epv = _femto_uav_gps.epv;
+		_gps_position->hdop = _femto_uav_gps.hdop;
+		_gps_position->vdop = _femto_uav_gps.vdop;
+		_gps_position->noise_per_ms = _femto_uav_gps.noise_per_ms;
+		_gps_position->jamming_indicator = _femto_uav_gps.jamming_indicator;
+		_gps_position->vel_m_s = _femto_uav_gps.vel_m_s;
+		_gps_position->vel_n_m_s = _femto_uav_gps.vel_n_m_s;
+		_gps_position->vel_e_m_s = _femto_uav_gps.vel_e_m_s;
+		_gps_position->vel_d_m_s = _femto_uav_gps.vel_d_m_s;
+		_gps_position->cog_rad = _femto_uav_gps.cog_rad;
+		_gps_position->timestamp_time_relative = _femto_uav_gps.timestamp_time_relative;
+		_gps_position->heading = _femto_uav_gps.heading;
+		_gps_position->fix_type = _femto_uav_gps.fix_type;
+		_gps_position->vel_ned_valid = _femto_uav_gps.vel_ned_valid;
+		_gps_position->satellites_used = _femto_uav_gps.satellites_used;
 		
 		_gps_position->timestamp = gps_absolute_time();
 
@@ -420,7 +420,7 @@ int GPSDriverFemto::configure(unsigned &baudrate,OutputMode output_mode)
 #if 0
 	const char *config_options[][2] = {
 		"UNLOGALL\r\n",     "<UNLOGALL OK"    		/**< disable all NMEA and NMEA-Like Messages*/
-		"LOG PX4GPSB 0.2\r\n", "<LOG OK"   	/**< disable all ATM (ATOM) Messages*/
+		"LOG UAVGPSB 0.2\r\n", "<LOG OK"   	/**< disable all ATM (ATOM) Messages*/
 	};
 
 	for (unsigned int conf_i = 0; conf_i < sizeof(config_options) / sizeof(config_options[0]); conf_i++) {
@@ -429,10 +429,10 @@ int GPSDriverFemto::configure(unsigned &baudrate,OutputMode output_mode)
 		}
 	}
 #endif
-	if (writeAckedCommandFemto("LOG PX4GPSB 0.2\r\n", "<LOG OK",FEMO_RESPONSE_TIMEOUT) == 0){
-		FEMTO_DEBUG("command LOG PX4GPSB 0.2 success");
+	if (writeAckedCommandFemto("LOG UAVGPSB 0.2\r\n", "<LOG OK",FEMO_RESPONSE_TIMEOUT) == 0){
+		FEMTO_DEBUG("command LOG UAVGPSB 0.2 success");
 	}else{
-		FEMTO_DEBUG("command LOG PX4GPSB 0.2 failed");
+		FEMTO_DEBUG("command LOG UAVGPSB 0.2 failed");
 	}
 
 	if (output_mode == OutputMode::RTCM && _board == FemtoBoardType::BT_6A0) {

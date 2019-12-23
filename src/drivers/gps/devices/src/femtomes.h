@@ -51,10 +51,10 @@ class RTCMParsing;
 /* ms, timeout for waiting for a response*/
 #define FEMO_RESPONSE_TIMEOUT	200		
 
-/* Femtomes ID for Px4 output message */
-#define FEMTO_MSG_ID_PX4GPS 		8001   
+/* Femtomes ID for UAV output message */
+#define FEMTO_MSG_ID_UAVGPS 		8001   
 
-/* Femto px4gps message frame premble 3 bytes*/
+/* Femto uavgps message frame premble 3 bytes*/
 #define FEMTO_PREAMBLE1				0xaa
 #define	FEMTO_PREAMBLE2				0x44
 #define FEMTO_PREAMBLE3				0x12
@@ -107,9 +107,9 @@ private:
 	};
 	
 	/**
-	 * femto_px4_gps_t struct need to be packed
+	 * femto_uav_gps_t struct need to be packed
 	 */
-	struct PACKED femto_px4_gps_t {
+	struct PACKED femto_uav_gps_t {
 		uint64_t timestamp;
 		uint64_t time_utc_usec;
 		int32_t lat;
@@ -158,15 +158,15 @@ private:
 	};
 
 	/**
-	 * Analysis Femto px4gps frame content 
+	 * Analysis Femto uavgps frame content 
 	 */
 	union PACKED msg_buf_t {
-		vehicle_gps_position_s femto_px4_gps;
+		vehicle_gps_position_s femto_uav_gps;
 		uint8_t bytes[256];
 	};
 
 	/**
-	 * Analysis Femto px4gps frame header
+	 * Analysis Femto uavgps frame header
 	 */
 	union PACKED msg_header_t {
 		struct femto_msg_header_t femto_header;
@@ -174,7 +174,7 @@ private:
 	};
 
 	/**
-	 * receive Femto complete px4gps frame  
+	 * receive Femto complete uavgps frame  
 	 */
 	struct PACKED femto_msg_t
 	{
@@ -228,7 +228,7 @@ private:
 
 	struct satellite_info_s *_satellite_info {nullptr};
 	struct vehicle_gps_position_s *_gps_position {nullptr};
-	struct femto_px4_gps_t _femto_px4_gps;
+	struct femto_uav_gps_t _femto_uav_gps;
 	struct femto_msg_t _femto_msg;
 	FemtoDecodeState _decode_state{FemtoDecodeState::pream_ble1};
 
